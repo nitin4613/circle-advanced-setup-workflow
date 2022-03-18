@@ -1,5 +1,5 @@
 # Config dedicated for module C
-# All the resources must be prefixed with `module-c-` to avoid conflict
+# All the resources must be prefixed with `module-c-` to avoid conflicts
 
 version: 2.1
 
