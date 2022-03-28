@@ -20,6 +20,10 @@ parameters:
     description: Some string to pass
     type: string
     default: ""
+  mapping:
+    type: string
+    default: "mapping-default-value"
+
 
 # Custom commands aimed for the main workflows and jobs
 commands:
@@ -57,6 +61,15 @@ workflows:
             module-a
             module-b
             module-c module-b
+  migrate-db-workflow:
+    when: << pipeline.parameters.migrate_db >>
+    jobs:
+      - test_param:
+          mapping: "<< pipeline.parameters.mapping >>"
+      - view_db
+      - migrate-db:
+          db_name: "TEMP"
+
 
 orbs:
   # An "embedded" orb to facilitate config splitting
@@ -181,3 +194,16 @@ orbs:
           - continuation/continue:
               configuration_path: << parameters.continue-config >>
               parameters: '{"run-setup":false}'
+
+          - test_param:
+              docker:
+              - image: cimg/base:2022.03
+              parameters:
+              mapping:
+                type: string
+                default: "mapping-test-param"
+              steps:
+                - run:
+                    name: "testing access to mapping param << parameters.mapping >>"
+                    command: |
+                      echo "testing access to mapping param << parameters.mapping >>."
