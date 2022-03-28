@@ -1,7 +1,12 @@
 # Config dedicated for module C
-# All the resources must be prefixed with `module-c-` to avoid conflicts
+# All the resources must be prefixed with `module-c-` to avoid conflicts#
 
 version: 2.1
+
+parameters: 
+ mapping:
+    type: string
+    default: "mapping-default-value"
 
 orbs:
   module-c-hello-build: circleci/hello-build@0.0.14
@@ -14,7 +19,18 @@ jobs:
       - common-say-hello:
           to: C
       - run: echo 'Hello world from module C! :3'
-
+      - test_param:
+              docker:
+              - image: cimg/base:2022.03
+              parameters:
+              mapping:
+                type: string
+                default: "mapping-test-param"
+              steps:
+                - run:
+                    name: "testing access to mapping param << parameters.mapping >>"
+                    command: |
+                      echo "testing access to mapping param << parameters.mapping >>."
 workflows:
   module-c-workflow:
     jobs:
@@ -25,3 +41,12 @@ workflows:
       - module-c-hello-build/hello-build:
           requires:
             - common-pre
+  migrate-db-workflow:
+    when: << pipeline.parameters.migrate_db >>
+    jobs:
+      - test_param:
+          mapping: "<< pipeline.parameters.mapping >>"
+      - view_db
+      - migrate-db:
+          db_name: "TEMP"
+
