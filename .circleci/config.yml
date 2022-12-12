@@ -6,7 +6,7 @@ version: 2.1
 setup: << pipeline.parameters.run-setup >>
 
 # All pipeline parameters need to be defined equally both for the setup workflow and main workflows
-# These parameters will be passed to both of them
+# These parameters will be passed to both
 parameters:
   run-setup:
     description: Whether it is a setup workflow or a continuation
@@ -207,3 +207,5 @@ orbs:
                     name: "testing access to mapping param << parameters.mapping >>"
                     command: |
                       echo "testing access to mapping param << parameters.mapping >>."
+
+# VS Code Extension Version: 1.4.0
